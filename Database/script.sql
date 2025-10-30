@@ -9,23 +9,23 @@ USE db_biblioteca;
 -- =====================================================
 CREATE TABLE tbl_usuario (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(250) NOT NULL,
-    login VARCHAR(45) NOT NULL,
-    senha VARCHAR(45) NOT NULL
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL
 );
 
 -- Inserindo usuários
-INSERT INTO tbl_usuario (login, senha) VALUES
-('joao.silva', '123456'),
-('maria.santos', 'abc123'),
-('pedro.almeida', 'senha123'),
-('ana.lima', '1234'),
-('lucas.rocha', 'senha789'),
-('carla.mendes', 'pass123'),
-('fernando.torres', 'lib2024'),
-('juliana.oliveira', 'livro321'),
-('rafael.pereira', 'admin123'),
-('isabela.costa', 'senha456');
+INSERT INTO tbl_usuario (nome, email, senha) VALUES
+('João Silva', 'joao.silva@email.com', '123456'),
+('Maria Santos', 'maria.santos@gmail.com', 'senha123'),
+('Pedro Oliveira', 'pedro.oliveira@hotmail.com', 'pedro456'),
+('Ana Costa', 'ana.costa@email.com', 'ana789'),
+('Lucas Ferreira', 'lucas.ferreira@gmail.com', 'lucas321'),
+('Carla Souza', 'carla.souza@hotmail.com', 'carla654'),
+('Fernando Lima', 'fernando.lima@email.com', 'fernando987'),
+('Juliana Alves', 'juliana.alves@gmail.com', 'juliana111'),
+('Rafael Mendes', 'rafael.mendes@hotmail.com', 'rafael222'),
+('Isabela Rocha', 'isabela.rocha@email.com', 'isabela333');
 
 -- =====================================================
 -- TABELA: tipo_movimentacao
@@ -115,7 +115,8 @@ INSERT INTO tbl_movimentacao (id_movimentacao, id_usuario, quantidade, data_movi
 -- 1. Ver movimentações detalhadas com JOINs
 SELECT 
     m.id AS id_mov,
-    u.login AS usuario,
+    u.nome AS usuario,
+    u.email AS email_usuario,
     l.titulo AS livro,
     t.tipo AS tipo_movimentacao,
     m.quantidade,
@@ -132,8 +133,28 @@ FROM tbl_movimentacao
 WHERE id_movimentacao = 1;
 
 -- 3. Ver doações por usuário
-SELECT u.login, SUM(m.quantidade) AS total_doado
+SELECT u.nome, u.email, SUM(m.quantidade) AS total_doado
 FROM tbl_movimentacao m
 JOIN tbl_usuario u ON m.id_usuario = u.id
 WHERE id_movimentacao = 3
-GROUP BY u.login;
+GROUP BY u.nome, u.email;
+
+-- 4. Ver usuários e seus empréstimos ativos
+SELECT 
+    u.nome,
+    u.email,
+    COUNT(m.id) AS total_emprestimos
+FROM tbl_usuario u
+LEFT JOIN tbl_movimentacao m ON u.id = m.id_usuario AND m.id_movimentacao = 1
+GROUP BY u.id, u.nome, u.email
+ORDER BY total_emprestimos DESC;
+
+-- 5. Ver livros mais emprestados
+SELECT 
+    l.titulo,
+    l.isbn,
+    COUNT(m.id) AS vezes_emprestado
+FROM tbl_livro l
+LEFT JOIN tbl_movimentacao m ON l.id = m.id_livro AND m.id_movimentacao = 1
+GROUP BY l.id, l.titulo, l.isbn
+ORDER BY vezes_emprestado DESC;
