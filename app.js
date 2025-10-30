@@ -190,7 +190,7 @@ app.delete('/v1/biblioteca/movimentacao/:id', cors(), async function(request, re
 /*************************************************************************************************
  *                                      INICIANDO SERVIDOR
  *************************************************************************************************/
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 3030
 app.listen(PORT, function(){
     console.log(`API BIBLIOTECA rodando na porta ${PORT}`)
 })
