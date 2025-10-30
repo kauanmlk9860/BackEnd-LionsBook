@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model tbl_usuario {
+  id                Int                 @id @default(autoincrement())
+  nome              String              @db.VarChar(100)
+  email             String              @unique @db.VarChar(100)
+  senha             String              @db.VarChar(255)
+  tbl_movimentacao  tbl_movimentacao[]
+
+  @@map("tbl_usuario")
+}
+
+model tbl_livro {
+  id                Int                 @id @default(autoincrement())
+  titulo            String              @db.VarChar(100)
+  data_publicacao   DateTime            @db.Date
+  quantidade        Int
+  isbn              String              @db.VarChar(45)
+  tbl_movimentacao  tbl_movimentacao[]
+
+  @@map("tbl_livro")
+}
+
+model tipo_movimentacao {
+  id                Int                 @id @default(autoincrement())
+  tipo              String              @db.VarChar(45)
+  tbl_movimentacao  tbl_movimentacao[]
+
+  @@map("tipo_movimentacao")
+}
+
+model tbl_movimentacao {
+  id                    Int                   @id @default(autoincrement())
+  id_movimentacao       Int
+  id_usuario            Int
+  quantidade            Int
+  data_movimentacao     DateTime              @db.Date
+  id_livro              Int
+  
+  usuario               tbl_usuario           @relation(fields: [id_usuario], references: [id])
+  livro                 tbl_livro             @relation(fields: [id_livro], references: [id])
+  tipo_movimentacao     tipo_movimentacao     @relation(fields: [id_movimentacao], references: [id])
+
+  @@map("tbl_movimentacao")
+}
