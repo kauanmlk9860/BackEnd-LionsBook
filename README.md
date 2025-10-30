@@ -352,6 +352,4 @@ Se você encontrar algum problema ou tiver dúvidas:
 
 **⭐ Se este projeto te ajudou, deixe uma estrela! ⭐**
 
-Made with ❤️ by [Kauan de Assis Leonel Rodrigues]
-
 </div>
